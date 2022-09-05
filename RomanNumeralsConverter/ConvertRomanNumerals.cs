@@ -1,28 +1,25 @@
-﻿namespace RomanNumeralsConverter
+﻿using NUnit.Framework.Interfaces;
+
+namespace RomanNumeralsConverter
 {
     class ConvertRomanNumerals
     {
-        private static Dictionary<string, int> RomanDict = new Dictionary<string, int>()
+        const int notExist = 0;
+
+        private static Dictionary<char, int> RomanDict = new Dictionary<char, int>()
         {
-            {"I", 1},
-            {"IV", 4},
-            {"V", 5},
-            {"IX", 9},
-            {"X", 10},
-            {"XL", 40},
-            {"L", 50},
-            {"XC", 90},
-            {"C", 100},
-            {"CD", 400},
-            {"D", 500},
-            {"CM", 900},
-            {"M", 1000}
+            {'I', 1},
+            {'V', 5},
+            {'X', 10},
+            {'L', 50},
+            {'C', 100},
+            {'D', 500},
+            {'M', 1000}
         };
 
-        //Method to map the input string to the RomanDict dictionary and return the mapped value, return 0 if can't map.
-        private int MatchRomanToDict(string romanToMatchDict)
+        //Compare the input char with RomanDict and return the mapped value, return "notExist" if can't map.
+        private int MatchRomanToDict(char romanToMatchDict)
         {
-            const int notExist = 0;
             foreach (var item in RomanDict)
             {
                 if (romanToMatchDict == item.Key)
@@ -39,64 +36,30 @@
 
             if (romanNum != null && romanNum != "")
             {
-                const int comparisonStringSize = 2;
-                int number = 0;
-                int shiftIndex = 0;
-                bool validRomanNum = true;
-                char[] FirstRomanToMatchDict = new char[comparisonStringSize];
-                char[] SecRomanToMatchDict = new char[comparisonStringSize];
+                var number = 0;
+                var validRomanNum = true;
+                romanNum = romanNum.ToUpper();
                 char[] romanNumArr = romanNum.ToCharArray();
 
-                //check input is a valid Roman Numerals or not
                 for (int i = 0; i < romanNum.Length; i++)
-                    if (MatchRomanToDict(Char.ToString(romanNum[i])) == 0)
+                {
+                    if (MatchRomanToDict(romanNum[i]) == notExist) //check input is a valid Roman Numerals or not.
                         validRomanNum = false;
+                    else
+                        number += MatchRomanToDict(romanNumArr[i]); //sum up all Roman numerals as a total number.
+                }
 
                 if (validRomanNum)
                 {
-                    for (int i = 0; i < romanNum.Length; i++)
-                    {
-                        //empty string array to store roman numeral to compare with RomanDict
-                        Array.Clear(FirstRomanToMatchDict, 0, FirstRomanToMatchDict.Length);
-                        Array.Clear(SecRomanToMatchDict, 0, SecRomanToMatchDict.Length);
+                    //deduct difference from total in existance of the following combinations
+                    if (romanNum.Contains("IV") || romanNum.Contains("IX"))
+                        number -= 2;
 
-                        //store the [i] character to first compare string
-                        FirstRomanToMatchDict[0] = romanNumArr[i];
+                    if (romanNum.Contains("XL") || romanNum.Contains("XC"))
+                        number -= 20;
 
-                        //if not the end of the input roman numeral, store the [i+1] character to the comparison strings
-                        if (i+1 < romanNum.Length)
-                        {
-                            FirstRomanToMatchDict[1] = romanNumArr[i+1];
-                            SecRomanToMatchDict[0] = romanNumArr[i+1];
-                        }
-
-                        //if not the end of the input roman numeral, store the [i+2] character to the 2nd digit of the 2nd comparison string
-                        if (i+2 < romanNum.Length)
-                            SecRomanToMatchDict[1] = romanNumArr[i+2];
-
-                        //try to get the value of each comparison string
-                        int FirstRomanDictValue = MatchRomanToDict(new string(FirstRomanToMatchDict));
-                        int SecRomanDictValue = MatchRomanToDict(new string(SecRomanToMatchDict));
-
-                        if (FirstRomanDictValue > 0) //first comparison string representing a value
-                        {
-                            number += FirstRomanDictValue;
-                            shiftIndex = 1; //1 because handled 2 characters
-                            i += shiftIndex; 
-                        }
-                        else if (SecRomanDictValue > 0) //second comparison string representing a value
-                        {
-                            number += MatchRomanToDict(Char.ToString(FirstRomanToMatchDict[0])) + SecRomanDictValue;
-                            shiftIndex = 2; //2 because handled 3 characters
-                            i += shiftIndex;
-                        }
-                        else //all 3 characters doesn't combine to represent a value, add the first 2 values
-                        {
-                            number += MatchRomanToDict(Char.ToString(FirstRomanToMatchDict[0])) + MatchRomanToDict(Char.ToString(FirstRomanToMatchDict[1]));
-                            shiftIndex = 1; //1 because handled 2 characters
-                            i += shiftIndex;
-                        }
-                    }
+                    if (romanNum.Contains("CD") || romanNum.Contains("CM"))
+                        number -= 200;
 
                     Console.WriteLine(number);
                 }

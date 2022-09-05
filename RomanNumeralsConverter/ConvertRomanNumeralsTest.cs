@@ -219,5 +219,25 @@ public class ConvertRomanNumeralsTest
         Assert.AreEqual($"Please enter a Roman Numeral\nInvalid Roman Numerals.\n", output);
     }
 
+    [Test]
+    public void Roman_numeral_MDcCViI_Should_Return_1707()
+    {
+        //arrange
+        var RomanConverter = new ConvertRomanNumerals();
+        var romanNum = "MDcCViI";
+
+        var stringWriter = new StringWriter();
+        Console.SetOut(stringWriter);
+
+        var stringReader = new StringReader(romanNum);
+        Console.SetIn(stringReader);
+
+        //act
+        RomanConverter.ConvertRomanNum();
+
+        //assert
+        var output = stringWriter.ToString();
+        Assert.AreEqual($"Please enter a Roman Numeral\n1707\n", output);
+    }
 }
 
