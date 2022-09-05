@@ -4,7 +4,7 @@ namespace RomanNumeralsConverter
 {
     class ConvertRomanNumerals
     {
-        const int notExist = 0;
+        const int NotExist = 0;
 
         private static Dictionary<char, int> RomanDict = new Dictionary<char, int>()
         {
@@ -17,7 +17,7 @@ namespace RomanNumeralsConverter
             {'M', 1000}
         };
 
-        //Compare the input char with RomanDict and return the mapped value, return "notExist" if can't map.
+        //Compare the input char with RomanDict and return the mapped value, return "NotExist" if can't map.
         private int MatchRomanToDict(char romanToMatchDict)
         {
             foreach (var item in RomanDict)
@@ -26,7 +26,7 @@ namespace RomanNumeralsConverter
                     return item.Value;
             }
 
-            return notExist;
+            return NotExist;
         }
 
         public void ConvertRomanNum()
@@ -43,10 +43,11 @@ namespace RomanNumeralsConverter
 
                 for (int i = 0; i < romanNum.Length; i++)
                 {
-                    if (MatchRomanToDict(romanNum[i]) == notExist) //check input is a valid Roman Numerals or not.
+                    var romanToNum = MatchRomanToDict(romanNum[i]);
+                    if (romanToNum == NotExist) //check input is a valid Roman Numerals or not.
                         validRomanNum = false;
                     else
-                        number += MatchRomanToDict(romanNumArr[i]); //sum up all Roman numerals as a total number.
+                        number += romanToNum; //sum up all Roman numerals as a total number.
                 }
 
                 if (validRomanNum)
